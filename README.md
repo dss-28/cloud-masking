@@ -85,12 +85,3 @@ Special thanks to the **startup pre-evaluation team** for designing this challen
 ✨ If you find this useful, consider giving the repo a ⭐!
 
 ---
-
-I can also **draft a LinkedIn-ready post** from this README that:
-
-* Highlights **you solved a startup-level problem pre-internship**
-* Emphasizes **SCL → DL regeneration workflow**
-* Attracts **senior engineers and founders**
-* Is concise, visually appealing, and shareable
-
-Do you want me to make that LinkedIn post next?
