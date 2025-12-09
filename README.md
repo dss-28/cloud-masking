@@ -1,7 +1,7 @@
 
 # 🌥️ Deep Learning Cloud Masking for Sentinel-2 / Multispectral Imagery
 
-![Cloud Masking](header_image_placeholder)
+
 
 ## 🧠 About
 
