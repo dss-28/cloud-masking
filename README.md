@@ -135,9 +135,6 @@ Although developed in an **AgriTech** context, cloud reconstruction benefits:
 ```
 ├── cnn_improved.ipynb
 ├── unet.ipynb
-├── simple_cnn_cloud.pth  # trained CNN model
-├── unet_cloud.pth         # trained U-Net model
-├── dataset.pt             # preprocessed dataset
 └── README.md
 ```
 
