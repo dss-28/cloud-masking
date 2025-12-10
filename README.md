@@ -1,88 +1,132 @@
+# 🛰️ Cloud Reconstruction from Sentinel-2 Imagery
 
-# 🌥️ Deep Learning Cloud Masking for Sentinel-2 / Multispectral Imagery
+A deep-learning based **cloud removal and surface reconstruction** project built from **raw Sentinel-2 satellite data**, developed as part of an evaluation task for an AgriTech startup.
 
-
-
-## 🧠 About
-
-Clouds obscure satellite imagery, reducing the quality of applications like **crop classification, NDVI, and land cover mapping**.
-
-This project solves a **real-world satellite imagery challenge** as a **pre-internship evaluation task**. The pipeline uses **Sentinel-2 Scene Classification Layer (SCL)** to label cloudy pixels and then **regenerates high-quality cloud masks using deep learning**, making the data **production-ready**.
+Cloud cover affects **all satellite-based domains** — agriculture, water, forestry, climate, and urban analytics. This project goes beyond simply detecting clouds and focuses on **reconstructing the hidden ground surface**.
 
 ---
 
-## 🔍 Key Features
+## 🌥️ Problem Statement
 
-* **SCL-based Cloud Labeling:** Uses Sentinel-2 SCL as initial labels for cloudy pixels
-* **U-Net Deep Learning Segmentation:** Regenerates accurate cloud masks from 13-band multispectral data
-* **Patch-Based Training :** High-detail segmentation for real-world images
-* **Custom Dataset & PyTorch Data Loaders** built with rasterio & segmentation_models_pytorch
-* **GIS Integration:** Georeferencing, CRS handling, band stacking
-* **Data Augmentation:** Handles cloud variability (rotations, flips, color jitter)
-* **Evaluation:** PSNR & SSIM per patch to measure segmentation quality
+Satellite imagery often suffers from heavy cloud cover. While Sentinel-2 provides a **Scene Classification Layer (SCL)** that marks:
 
----
+* Cloud
+* Cloud Shadow
+* Snow
 
-## 📊 Dataset Summary
+…it only **identifies** these regions.
 
-| Dataset                    | Type            | Samples Used   | Notes                                                   |
-| -------------------------- | --------------- | -------------- | ------------------------------------------------------- |
-| Sentinel-2 / Multispectral | 13-band imagery | Custom patches | Labels generated from SCL, refined with DL regeneration |
+### ❌ SCL does *not* reconstruct what lies beneath the clouds.
+
+### ✔ This project builds models that actually **generate cloud-free imagery**.
 
 ---
 
-## ⚙️ Experimental Setup
+## 🚀 Objective
 
-| Parameter          | Value                                        |
-| ------------------ | -------------------------------------------- |
-| Model              | U-Net (PyTorch, segmentation_models_pytorch) |
-| Input              | 13-band multispectral patches                |
-| Batch Size         | 4–8                                          |
-| Data Augmentation  | Rotations, flips, color jitter               |
-| Evaluation Metrics | PSNR, SSIM per patch                         |
-| Platform           | Google Colab / Local GPU                     |
+Build a deep-learning pipeline that:
+
+* Takes a **cloudy Sentinel-2 tile**
+* Uses the SCL mask for supervision
+* **Reconstructs the hidden land surface**
+* Outputs a **clean, usable multi-band patch**
 
 ---
 
-## 📈 Results & Impact
+## 🤖 Model Architectures
 
-* High-quality cloud masks generated **beyond raw SCL labels**
-* Supports **downstream ML pipelines**: crop classification, NDVI, land cover mapping
-* Demonstrates **research-level implementation**: even PhD students struggle to produce robust, real-world cloud segmentation pipelines
+Two reconstruction models were developed:
 
----
+### 1️⃣ CNN Encoder–Decoder (Baseline)
 
-## 🛠️ Workflow
+A simple encoder–decoder architecture that:
 
-1. **SCL Label Extraction:** Extract cloudy pixels from Sentinel-2 Scene Classification Layer
-2. **Patch Preparation:** Band stacking, georeferencing, patch extraction
-3. **Data Augmentation:** Rotations, flips, color jitter for robustness
-4. **Model Training:** U-Net for cloud mask regeneration
-5. **Evaluation:** PSNR & SSIM per patch
-6. **Prediction:** Apply trained model to full multispectral images
+* Encodes cloudy input
+* Learns a latent representation
+* Decodes to reconstruct missing surface information
 
----
+This validated the **feasibility** of cloud reconstruction using DL.
 
-## 🔮 Future Work
+### 2️⃣ U-Net (Improved Model)
 
-* Extend to **multi-satellite datasets**
-* Integrate into **end-to-end crop/vegetation monitoring pipelines**
-* Explore **transformer-based segmentation models for cloud detection**
+A U-Net with skip connections for richer spatial detail:
 
----
+* Multi-scale feature extraction
+* Better texture and boundary preservation
+* Takes **cloudy input + SCL mask**
 
-## 💼 Acknowledgments
+Produces a **clean, reconstructed multi-band patch**.
 
-Special thanks to the **startup pre-evaluation team** for designing this challenging real-world task. The project demonstrates **production-ready geospatial AI capabilities**.
+Both models are **working prototypes**, not production-ready, but strong proofs of concept.
 
 ---
 
-## 🔗 Links
+## ⭐ Results
 
-* GitHub Repository: [github.com/dss-28/cloud-masking](#)
-* Author: Darshan Shirsat
+The prototypes successfully:
 
-✨ If you find this useful, consider giving the repo a ⭐!
+* Reconstructed surface information hidden by clouds
+* Cleaned cloud-occluded regions
+* Produced more stable NDVI and vegetation indicators (useful for agri)
+* Generated more reliable inputs for any satellite-based analysis
 
 ---
 
+## 🌍 Applicability Across Domains
+
+Although developed in an **AgriTech** context, cloud reconstruction benefits:
+
+* Agriculture (NDVI, crop monitoring)
+* Water resource analysis
+* Forestry and land-cover monitoring
+* Urban development and planning
+* Disaster management (flood/landslide assessment)
+
+---
+
+## 📁 Project Structure
+
+```
+├── data/
+│   ├── raw_tiles/
+│   └── scl_masks/
+├── models/
+│   ├── cnn_encoder_decoder.py
+│   └── unet_reconstruction.py
+├── notebooks/
+│   └── exploration.ipynb
+├── utils/
+│   └── preprocessing.py
+├── train.py
+├── inference.py
+└── README.md
+```
+
+---
+
+## 🔧 Tech Stack
+
+* Python
+* PyTorch
+* Rasterio
+* NumPy / OpenCV
+* Sentinel-2 Multi-Spectral Imagery (13-band)
+
+---
+
+## 📌 Future Work
+
+* Add temporal cloud-free reference tiles
+* Introduce super-resolution for sharper outputs
+* Deploy as an API / microservice
+* Add quality evaluation metrics (PSNR, SSIM)
+
+---
+
+## 🙌 Acknowledgment
+
+This project was built during an evaluation task for an **AgriTech startup**, and represents my first real-world experience working with **raw satellite imagery**.
+
+---
+
+If you want, I can add badges, installation instructions, visuals, or pipeline diagrams.
