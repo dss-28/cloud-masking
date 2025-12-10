@@ -47,6 +47,30 @@ A simple encoder–decoder architecture that:
 
 This validated the **feasibility** of cloud reconstruction using DL.
 
+#### Training Details (CNN)
+
+* Optimizer: **Adam**, lr=5e-5
+* Batch size: 4
+* Epochs: 10
+* Device: GPU if available
+* Data augmentation: random horizontal/vertical flips
+* Loss: **Cloud-only MSE**, computed only on cloud pixels
+* Gradient clipping: max norm 1.0
+
+```python
+loss = cloud_only_mse(prediction, target, cloud_mask)
+```
+
+Model checkpoint: `simple_cnn_cloud.pth`
+
+### CNN Encoder–Decoder Training Results
+
+* Initial Loss: 0.0317
+* Final Loss: 0.002138
+* Observation: Rapid convergence within first few epochs, low final masked MSE, demonstrates effective reconstruction of clouded regions.
+
+---
+
 ### 2️⃣ U-Net (Improved Model)
 
 A U-Net with skip connections for richer spatial detail:
@@ -57,18 +81,40 @@ A U-Net with skip connections for richer spatial detail:
 
 Produces a **clean, reconstructed multi-band patch**.
 
+#### Training Details (U-Net)
+
+* Optimizer: **Adam**, lr=5e-5
+* Batch size: 4
+* Epochs: 20
+* Device: GPU if available
+* Data augmentation: random horizontal/vertical flips
+* Loss: **Masked MSE**, focuses on cloud pixels
+* Gradient clipping: max norm 1.0
+
+```python
+loss = masked_mse(prediction, target, mask)
+```
+
+Model checkpoint: `unet_cloud.pth`
+
+### U-Net Training Results
+
+* Initial Loss: 0.0873
+* Final Loss: 0.003369
+* Observation: Rapid convergence in early epochs, stable low masked MSE, successfully reconstructs cloud-covered regions.
+
 Both models are **working prototypes**, not production-ready, but strong proofs of concept.
 
 ---
 
 ## ⭐ Results
 
-The prototypes successfully:
+The models successfully reconstructed surface information hidden by clouds and cleaned cloud-occluded regions:
 
-* Reconstructed surface information hidden by clouds
-* Cleaned cloud-occluded regions
-* Produced more stable NDVI and vegetation indicators (useful for agri)
-* Generated more reliable inputs for any satellite-based analysis
+* **CNN Encoder–Decoder:** final masked MSE ~0.0021
+* **U-Net:** final masked MSE ~0.0034
+
+Both models demonstrate that deep learning can effectively recover information obscured by clouds, providing more reliable satellite data.
 
 ---
 
@@ -87,18 +133,11 @@ Although developed in an **AgriTech** context, cloud reconstruction benefits:
 ## 📁 Project Structure
 
 ```
-├── data/
-│   ├── raw_tiles/
-│   └── scl_masks/
-├── models/
-│   ├── cnn_encoder_decoder.py
-│   └── unet_reconstruction.py
-├── notebooks/
-│   └── exploration.ipynb
-├── utils/
-│   └── preprocessing.py
-├── train.py
-├── inference.py
+├── cnn_improved.ipynb
+├── unet.ipynb
+├── simple_cnn_cloud.pth  # trained CNN model
+├── unet_cloud.pth         # trained U-Net model
+├── dataset.pt             # preprocessed dataset
 └── README.md
 ```
 
@@ -126,7 +165,3 @@ Although developed in an **AgriTech** context, cloud reconstruction benefits:
 ## 🙌 Acknowledgment
 
 This project was built during an evaluation task for an **AgriTech startup**, and represents my first real-world experience working with **raw satellite imagery**.
-
----
-
-If you want, I can add badges, installation instructions, visuals, or pipeline diagrams.
